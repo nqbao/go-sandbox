@@ -21,3 +21,9 @@ func verifyHeapNode(heap []int, node int) bool {
 
 	return true
 }
+
+// Heapify converts an array to ensure it satisfies the heap property
+// this function performs inplace edit of the given array
+func Heapify(heap []int) {
+
+}
