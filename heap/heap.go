@@ -25,5 +25,30 @@ func verifyHeapNode(heap []int, node int) bool {
 // Heapify converts an array to ensure it satisfies the heap property
 // this function performs inplace edit of the given array
 func Heapify(heap []int) {
+	// convert all subtrees of the heaps
+	for i := len(heap) / 2; i >= 0; i-- {
+		heapifySubtree(heap, i)
+	}
+}
 
+func heapifySubtree(heap []int, node int) {
+	size := len(heap)
+	left := 2*node + 1
+	right := 2*node + 2
+
+	largest := node
+
+	if left < size && heap[left] > heap[largest] {
+		largest = left
+	}
+
+	if right < size && heap[right] > heap[largest] {
+		largest = right
+	}
+
+	// move down
+	if largest != node {
+		heap[largest], heap[node] = heap[node], heap[largest]
+		heapifySubtree(heap, largest)
+	}
 }
