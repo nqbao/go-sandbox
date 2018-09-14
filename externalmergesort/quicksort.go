@@ -1,6 +1,9 @@
 package externalmergesort
 
 // perform inline quicksort
+// I choose quicksort because it does not require extra memory and it is generally faster than
+// heapsort because it does not need to swap the element around.
+// see https://medium.com/@k2u4yt/quicksort-vs-heapsort-3b6dc5395083
 func quicksort(input []int32, size int) {
 	quicksortFrom(input, 0, size-1)
 }
