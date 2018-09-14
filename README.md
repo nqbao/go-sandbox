@@ -7,6 +7,7 @@ What i like about Go:
 
   * Clear and nice syntax.
   * Channel and goroutine is awesome, a lot more cleaner than in python where i have to use Condition for cordination.
+  * Concurrency is easy to reason. Everything is blocking, unless you let it `go`.
   * Strong-typed
 
 What I don't like about Go:
