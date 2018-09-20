@@ -15,6 +15,7 @@ What I don't like about Go:
   * Single workspace is a confusing.
   * Error handling is just awful. It's too bad that Go does not have a try / catch block.
   * JSON deserialization is hard if you don't know the key and type of the value.
+  * Lacking of Generic
 
 ## Links
 
