@@ -1,15 +1,22 @@
 package client
 
 import (
+	"bufio"
+	"io"
+	"log"
 	"net"
+	"strings"
 )
 
 type ChatClient struct {
-	conn net.Conn
+	conn     net.Conn
+	Incoming chan string
 }
 
 func NewClient() *ChatClient {
-	return &ChatClient{}
+	return &ChatClient{
+		Incoming: make(chan string),
+	}
 }
 
 func (c *ChatClient) Dial(address string) error {
@@ -20,6 +27,22 @@ func (c *ChatClient) Dial(address string) error {
 	}
 
 	return err
+}
+
+func (c *ChatClient) Start() {
+	reader := bufio.NewReader(c.conn)
+
+	for {
+		msg, err := reader.ReadString('\n')
+
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			log.Printf("Read error %v", err)
+		}
+
+		c.Incoming <- strings.TrimSpace(msg)
+	}
 }
 
 func (c *ChatClient) Close() {

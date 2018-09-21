@@ -2,7 +2,6 @@ package server
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"log"
 	"net"
@@ -51,15 +50,15 @@ func (s *ChatServer) Start() {
 	}
 }
 
-func (s *ChatServer) Broadcast(msg []byte) {
+func (s *ChatServer) Broadcast(msg string) {
 	for _, conn := range s.clients {
 		// TODO: handle error here?
-		conn.Write(msg)
+		conn.Write([]byte(msg))
 	}
 }
 
 func (s *ChatServer) accept(conn net.Conn) {
-	log.Printf("Accepting connection from %v", conn.RemoteAddr().String())
+	log.Printf("Accepting connection from %v, total clients: %v", conn.RemoteAddr().String(), len(s.clients)+1)
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
@@ -69,19 +68,32 @@ func (s *ChatServer) accept(conn net.Conn) {
 	go func() {
 		reader := bufio.NewReader(conn)
 
-		defer conn.Close()
+		defer func() {
+			s.mutex.Lock()
+			defer s.mutex.Unlock()
+
+			// remove the connections from clients array
+			for i, check := range s.clients {
+				if check == conn {
+					s.clients = append(s.clients[:i], s.clients[i+1:]...)
+				}
+			}
+
+			log.Printf("Closing connection from %v", conn.RemoteAddr().String())
+			conn.Close()
+		}()
 
 		for {
 			msg, err := reader.ReadString('\n')
 
-			fmt.Printf("%v\n", msg)
+			if err != nil && err != io.EOF {
+				log.Printf("Read error: %v", err)
+			}
+
+			s.Broadcast(msg)
 
 			if err == io.EOF {
-				// TODO: close the connection
-				log.Printf("Closing connection from %v", conn.RemoteAddr().String())
 				break
-			} else {
-				log.Printf("Read error %v", err)
 			}
 		}
 	}()

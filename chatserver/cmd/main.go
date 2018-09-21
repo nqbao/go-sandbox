@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"flag"
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/nqbao/learn-go/chatserver/client"
 	"github.com/nqbao/learn-go/chatserver/server"
@@ -16,6 +19,8 @@ func main() {
 	if *address == "" {
 		server := server.NewServer()
 		server.Listen(":3333")
+
+		// start the server
 		server.Start()
 	} else {
 		client := client.NewClient()
@@ -25,8 +30,27 @@ func main() {
 			log.Fatal(err)
 		}
 
-		client.Send("Hello")
-
+		// start the client to listen for incoming message
 		defer client.Close()
+
+		go client.Start()
+
+		go func() {
+			for msg := range client.Incoming {
+				fmt.Printf("> %v\n", msg)
+			}
+		}()
+
+		// send message
+		reader := bufio.NewReader(os.Stdin)
+		for {
+			msg, err := reader.ReadString('\n')
+
+			if err != nil {
+				panic(err)
+			}
+
+			client.Send(msg)
+		}
 	}
 }
