@@ -17,8 +17,17 @@ What I don't like about Go:
   * JSON deserialization is hard if you don't know the key and type of the value.
   * Lacking of Generic
 
+## Channels
+
+It’s okie to leave channel open. GC will collect it
+
+  * http://www.tapirgames.com/blog/golang-channel-closing
+
 ## Links
 
   * Package name convention
     * https://rakyll.org/style-packages
     * https://blog.golang.org/package-names
+  * [Dependencies management with Dep](https://golang.github.io/dep)
+    * [Should I commit vendor folder?](https://github.com/golang/dep/blob/master/docs/FAQ.md#should-i-commit-my-vendor-directory)
+  * [appliedgo.net](https://appliedgo.net/tui/)

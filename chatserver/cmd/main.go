@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"flag"
-	"fmt"
 	"log"
-	"os"
 
 	"github.com/nqbao/learn-go/chatserver/client"
+	"github.com/nqbao/learn-go/chatserver/client/tui"
 	"github.com/nqbao/learn-go/chatserver/server"
 )
 
@@ -35,22 +33,24 @@ func main() {
 
 		go client.Start()
 
-		go func() {
-			for msg := range client.Incoming {
-				fmt.Printf("> %v\n", msg)
-			}
-		}()
+		tui.StartUi(client)
 
-		// send message
-		reader := bufio.NewReader(os.Stdin)
-		for {
-			msg, err := reader.ReadString('\n')
+		// go func() {
+		// 	for msg := range client.Incoming {
+		// 		fmt.Printf("> %v\n", msg)
+		// 	}
+		// }()
 
-			if err != nil {
-				panic(err)
-			}
+		// // send message
+		// reader := bufio.NewReader(os.Stdin)
+		// for {
+		// 	msg, err := reader.ReadString('\n')
 
-			client.Send(msg)
-		}
+		// 	if err != nil {
+		// 		panic(err)
+		// 	}
+
+		// 	client.Send(msg)
+		// }
 	}
 }
