@@ -8,14 +8,10 @@ import (
 )
 
 func StartUi(c *client.ChatClient) {
-	// loginView := NewLoginView()
+	loginView := NewLoginView()
 	chatView := NewChatView()
 
-	chatView.OnMessage(func(msg string) {
-		c.Send(fmt.Sprintf("%v\n", msg))
-	})
-
-	ui, err := tui.New(chatView)
+	ui, err := tui.New(loginView)
 	if err != nil {
 		panic(err)
 	}
@@ -24,6 +20,14 @@ func StartUi(c *client.ChatClient) {
 
 	ui.SetKeybinding("Esc", quit)
 	ui.SetKeybinding("Ctrl+c", quit)
+
+	loginView.OnLogin(func(username string) {
+		ui.SetWidget(chatView)
+	})
+
+	chatView.OnMessage(func(msg string) {
+		c.Send(fmt.Sprintf("%v\n", msg))
+	})
 
 	go func() {
 		for msg := range c.Incoming {
