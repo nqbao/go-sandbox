@@ -90,7 +90,9 @@ func (s *ChatServer) accept(conn net.Conn) {
 				log.Printf("Read error: %v", err)
 			}
 
-			s.Broadcast(msg)
+			if msg != "" {
+				s.Broadcast(msg)
+			}
 
 			if err == io.EOF {
 				break

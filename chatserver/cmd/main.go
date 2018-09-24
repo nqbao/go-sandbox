@@ -34,23 +34,5 @@ func main() {
 		go client.Start()
 
 		tui.StartUi(client)
-
-		// go func() {
-		// 	for msg := range client.Incoming {
-		// 		fmt.Printf("> %v\n", msg)
-		// 	}
-		// }()
-
-		// // send message
-		// reader := bufio.NewReader(os.Stdin)
-		// for {
-		// 	msg, err := reader.ReadString('\n')
-
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-
-		// 	client.Send(msg)
-		// }
 	}
 }
