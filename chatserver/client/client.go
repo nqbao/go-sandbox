@@ -1,16 +1,18 @@
 package client
 
 import (
-	"bufio"
 	"io"
 	"log"
 	"net"
-	"strings"
+
+	"github.com/nqbao/learn-go/chatserver/protocol"
 )
 
 type ChatClient struct {
-	conn     net.Conn
-	Incoming chan string
+	conn      net.Conn
+	cmdReader *protocol.CommandReader
+	cmdWriter *protocol.CommandWriter
+	Incoming  chan string
 }
 
 func NewClient() *ChatClient {
@@ -26,14 +28,15 @@ func (c *ChatClient) Dial(address string) error {
 		c.conn = conn
 	}
 
+	c.cmdReader = protocol.NewCommandReader(conn)
+	c.cmdWriter = protocol.NewCommandWriter(conn)
+
 	return err
 }
 
 func (c *ChatClient) Start() {
-	reader := bufio.NewReader(c.conn)
-
 	for {
-		msg, err := reader.ReadString('\n')
+		cmd, err := c.cmdReader.Read()
 
 		if err == io.EOF {
 			break
@@ -41,7 +44,14 @@ func (c *ChatClient) Start() {
 			log.Printf("Read error %v", err)
 		}
 
-		c.Incoming <- strings.TrimSpace(msg)
+		if cmd != nil {
+			switch v := cmd.(type) {
+			case protocol.MessageCommand:
+				c.Incoming <- v.Message
+			default:
+				log.Printf("Unknown command: %v", v)
+			}
+		}
 	}
 }
 
@@ -49,6 +59,8 @@ func (c *ChatClient) Close() {
 	c.conn.Close()
 }
 
-func (c *ChatClient) Send(message string) {
-	c.conn.Write([]byte(message))
+func (c *ChatClient) Send(message string) error {
+	return c.cmdWriter.Write(protocol.SendCommand{
+		Message: message,
+	})
 }

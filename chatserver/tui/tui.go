@@ -1,8 +1,6 @@
 package tui
 
 import (
-	"fmt"
-
 	"github.com/marcusolsson/tui-go"
 	"github.com/nqbao/learn-go/chatserver/client"
 )
@@ -26,7 +24,7 @@ func StartUi(c *client.ChatClient) {
 	})
 
 	chatView.OnMessage(func(msg string) {
-		c.Send(fmt.Sprintf("%v\n", msg))
+		c.Send(msg)
 	})
 
 	go func() {

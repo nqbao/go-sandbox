@@ -1,16 +1,22 @@
 package server
 
 import (
-	"bufio"
 	"io"
 	"log"
 	"net"
 	"sync"
+
+	"github.com/nqbao/learn-go/chatserver/protocol"
 )
+
+type client struct {
+	conn   net.Conn
+	writer *protocol.CommandWriter
+}
 
 type ChatServer struct {
 	listner net.Listener
-	clients []net.Conn
+	clients []*client
 	mutex   *sync.Mutex
 }
 
@@ -50,10 +56,10 @@ func (s *ChatServer) Start() {
 	}
 }
 
-func (s *ChatServer) Broadcast(msg string) {
-	for _, conn := range s.clients {
+func (s *ChatServer) Broadcast(msg interface{}) {
+	for _, client := range s.clients {
 		// TODO: handle error here?
-		conn.Write([]byte(msg))
+		client.writer.Write(msg)
 	}
 }
 
@@ -63,10 +69,13 @@ func (s *ChatServer) accept(conn net.Conn) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	s.clients = append(s.clients, conn)
+	s.clients = append(s.clients, &client{
+		conn:   conn,
+		writer: protocol.NewCommandWriter(conn),
+	})
 
 	go func() {
-		reader := bufio.NewReader(conn)
+		cmdReader := protocol.NewCommandReader(conn)
 
 		defer func() {
 			s.mutex.Lock()
@@ -74,7 +83,7 @@ func (s *ChatServer) accept(conn net.Conn) {
 
 			// remove the connections from clients array
 			for i, check := range s.clients {
-				if check == conn {
+				if check.conn == conn {
 					s.clients = append(s.clients[:i], s.clients[i+1:]...)
 				}
 			}
@@ -84,14 +93,19 @@ func (s *ChatServer) accept(conn net.Conn) {
 		}()
 
 		for {
-			msg, err := reader.ReadString('\n')
+			cmd, err := cmdReader.Read()
 
 			if err != nil && err != io.EOF {
 				log.Printf("Read error: %v", err)
 			}
 
-			if msg != "" {
-				s.Broadcast(msg)
+			if cmd != nil {
+				switch v := cmd.(type) {
+				case protocol.SendCommand:
+					go s.Broadcast(protocol.MessageCommand{
+						Message: v.Message,
+					})
+				}
 			}
 
 			if err == io.EOF {

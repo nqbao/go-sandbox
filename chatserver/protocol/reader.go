@@ -3,6 +3,7 @@ package protocol
 import (
 	"bufio"
 	"io"
+	"log"
 )
 
 type CommandReader struct {
@@ -49,6 +50,9 @@ func (r *CommandReader) Read() (interface{}, error) {
 		}
 
 		return SendCommand{message[:len(message)-1]}, nil
+
+	default:
+		log.Printf("Unknown command: %v", commandName)
 	}
 
 	return nil, UnknownCommand
