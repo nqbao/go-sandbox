@@ -17,11 +17,29 @@ What I don't like about Go:
   * JSON deserialization is hard if you don't know the key and type of the value.
   * Lacking of Generic
 
+## I/O
+
+  * [Use bytes.Buffer for string writer](https://stackoverflow.com/questions/13765797/the-best-way-to-get-a-string-from-a-writer-in-go)
+  * Use strings.Reader for string reader
+
 ## Channels
 
 It’s okie to leave channel open. GC will collect it
 
   * http://www.tapirgames.com/blog/golang-channel-closing
+
+## Ser/der
+
+  * [Gobs of data](https://blog.golang.org/gobs-of-data)
+    * [Handling interace{} decoding with Gob](https://play.golang.org/p/xt4zNyPZ2W)
+  * [Go codec series](http://ugorji.net/d/tag/go-codec/blog/)
+
+## Slices
+
+  * [Go slice is passed as reference](https://stackoverflow.com/questions/2439453/using-a-pointer-to-array).
+  * [Use copy() to copy slice](https://stackoverflow.com/questions/30182538/why-can-not-i-duplicate-a-slice-with-copy-in-golang)
+  * [Remove an item in slice](https://vbauerster.github.io/2017/04/removing-items-from-a-slice-while-iterating-in-go/)
+  * [Use reflect.DeepEqual to compare two slices](https://yourbasic.org/golang/compare-slices/)
 
 ## Links
 
@@ -31,3 +49,4 @@ It’s okie to leave channel open. GC will collect it
   * [Dependencies management with Dep](https://golang.github.io/dep)
     * [Should I commit vendor folder?](https://github.com/golang/dep/blob/master/docs/FAQ.md#should-i-commit-my-vendor-directory)
   * [appliedgo.net](https://appliedgo.net/tui/)
+  * [Go by examples: Errors](https://gobyexample.com/errors)

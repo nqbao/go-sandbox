@@ -21,6 +21,8 @@ For this excersie , I will use simple text-based message over TCP:
   * Server will send the following command to all clients when there are new message:
     * `MESSAGE username the actual message`
 
+Later on I will try protobuf, or Gob to write protocol.
+
 ## References
 
   * https://gist.github.com/drewolson/3950226
