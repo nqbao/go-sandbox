@@ -1,18 +1,10 @@
 package main
 
-/*
-#cgo CFLAGS:-I/Library/Java/Home/include -I/Library/Java/Home/include/darwin
-#cgo LDFLAGS:-ldl
-
-#include<jni.h>
-*/
-import "C"
-
 import (
 	"fmt"
 	"log"
 
-	"github.com/juntaki/jnigo"
+	"github.com/nqbao/jnigo"
 )
 
 func getJavaVersion(vm *jnigo.JVM) string {
