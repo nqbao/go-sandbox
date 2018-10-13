@@ -2,10 +2,10 @@
 
 A simple chat server written in Golang, with very basic features:
 
+  * There is only a single chat room for now
   * User can connect to the chat server
   * User can set their name
   * User can send message to the chat room
-  * There is only a single chat room for now
 
 ## Protocol
 

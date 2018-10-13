@@ -5,9 +5,10 @@ import (
 )
 
 func main() {
-	server := server.NewServer()
-	server.Listen(":3333")
+	var s server.ChatServer
+	s = server.NewServer()
+	s.Listen(":3333")
 
 	// start the server
-	server.Start()
+	s.Start()
 }

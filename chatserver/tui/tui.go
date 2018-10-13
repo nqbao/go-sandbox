@@ -5,7 +5,7 @@ import (
 	"github.com/nqbao/learn-go/chatserver/client"
 )
 
-func StartUi(c *client.ChatClient) {
+func StartUi(c *client.TcpChatClient) {
 	loginView := NewLoginView()
 	chatView := NewChatView()
 
