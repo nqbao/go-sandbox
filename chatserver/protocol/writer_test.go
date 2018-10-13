@@ -32,7 +32,7 @@ func TestWriteCommand(t *testing.T) {
 		}
 
 		if buf.String() != test.result {
-			t.Errorf("Command output is not the same: %v %v", buf.String, test.result)
+			t.Errorf("Command output is not the same: %v %v", buf.String(), test.result)
 		}
 	}
 }

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "jni_wrapper.h": "c",
+        "jni.h": "c"
+    }
+}

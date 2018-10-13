@@ -11,6 +11,7 @@ import (
 
 type client struct {
 	conn   net.Conn
+	name   string
 	writer *protocol.CommandWriter
 }
 
@@ -69,10 +70,12 @@ func (s *TcpChatServer) accept(conn net.Conn) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	s.clients = append(s.clients, &client{
+	client := &client{
 		conn:   conn,
 		writer: protocol.NewCommandWriter(conn),
-	})
+	}
+
+	s.clients = append(s.clients, client)
 
 	go func() {
 		cmdReader := protocol.NewCommandReader(conn)
@@ -83,7 +86,7 @@ func (s *TcpChatServer) accept(conn net.Conn) {
 
 			// remove the connections from clients array
 			for i, check := range s.clients {
-				if check.conn == conn {
+				if check == client {
 					s.clients = append(s.clients[:i], s.clients[i+1:]...)
 				}
 			}
@@ -104,7 +107,11 @@ func (s *TcpChatServer) accept(conn net.Conn) {
 				case protocol.SendCommand:
 					go s.Broadcast(protocol.MessageCommand{
 						Message: v.Message,
+						Name:    client.name,
 					})
+
+				case protocol.NameCommand:
+					client.name = v.Name
 				}
 			}
 

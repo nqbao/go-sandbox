@@ -20,10 +20,11 @@ func StartUi(c *client.TcpChatClient) {
 	ui.SetKeybinding("Ctrl+c", quit)
 
 	loginView.OnLogin(func(username string) {
+		c.SetName(username)
 		ui.SetWidget(chatView)
 	})
 
-	chatView.OnMessage(func(msg string) {
+	chatView.OnSubmit(func(msg string) {
 		c.Send(msg)
 	})
 
@@ -31,7 +32,7 @@ func StartUi(c *client.TcpChatClient) {
 		for msg := range c.Incoming {
 			// we need to make the change via ui update to make sure the ui is repaint correctly
 			ui.Update(func() {
-				chatView.AddMessage(msg)
+				chatView.AddMessage(msg.Name, msg.Message)
 			})
 		}
 	}()
