@@ -13,12 +13,12 @@ type TcpChatClient struct {
 	cmdReader *protocol.CommandReader
 	cmdWriter *protocol.CommandWriter
 	name      string
-	Incoming  chan protocol.MessageCommand
+	incoming  chan protocol.MessageCommand
 }
 
 func NewClient() *TcpChatClient {
 	return &TcpChatClient{
-		Incoming: make(chan protocol.MessageCommand),
+		incoming: make(chan protocol.MessageCommand),
 	}
 }
 
@@ -48,7 +48,7 @@ func (c *TcpChatClient) Start() {
 		if cmd != nil {
 			switch v := cmd.(type) {
 			case protocol.MessageCommand:
-				c.Incoming <- v
+				c.incoming <- v
 			default:
 				log.Printf("Unknown command: %v", v)
 			}
@@ -58,6 +58,10 @@ func (c *TcpChatClient) Start() {
 
 func (c *TcpChatClient) Close() {
 	c.conn.Close()
+}
+
+func (c *TcpChatClient) Incoming() chan protocol.MessageCommand {
+	return c.incoming
 }
 
 func (c *TcpChatClient) SetName(name string) error {
