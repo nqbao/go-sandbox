@@ -57,7 +57,8 @@ func (s *TcpChatServer) Start() {
 			log.Print(err)
 		} else {
 			// handle connection
-			go s.accept(conn)
+			client := s.accept(conn)
+			go s.serve(client)
 		}
 	}
 }
@@ -81,7 +82,7 @@ func (s *TcpChatServer) Send(name string, command interface{}) error {
 	return UnknownClient
 }
 
-func (s *TcpChatServer) accept(conn net.Conn) {
+func (s *TcpChatServer) accept(conn net.Conn) *client {
 	log.Printf("Accepting connection from %v, total clients: %v", conn.RemoteAddr().String(), len(s.clients)+1)
 
 	s.mutex.Lock()
@@ -94,47 +95,51 @@ func (s *TcpChatServer) accept(conn net.Conn) {
 
 	s.clients = append(s.clients, client)
 
-	go func() {
-		cmdReader := protocol.NewCommandReader(conn)
+	return client
+}
 
-		defer func() {
-			s.mutex.Lock()
-			defer s.mutex.Unlock()
+func (s *TcpChatServer) remove(client *client) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
-			// remove the connections from clients array
-			for i, check := range s.clients {
-				if check == client {
-					s.clients = append(s.clients[:i], s.clients[i+1:]...)
-				}
-			}
+	// remove the connections from clients array
+	for i, check := range s.clients {
+		if check == client {
+			s.clients = append(s.clients[:i], s.clients[i+1:]...)
+		}
+	}
 
-			log.Printf("Closing connection from %v", conn.RemoteAddr().String())
-			conn.Close()
-		}()
+	log.Printf("Closing connection from %v", client.conn.RemoteAddr().String())
+	client.conn.Close()
+}
 
-		for {
-			cmd, err := cmdReader.Read()
+func (s *TcpChatServer) serve(client *client) {
+	cmdReader := protocol.NewCommandReader(client.conn)
 
-			if err != nil && err != io.EOF {
-				log.Printf("Read error: %v", err)
-			}
+	defer s.remove(client)
 
-			if cmd != nil {
-				switch v := cmd.(type) {
-				case protocol.SendCommand:
-					go s.Broadcast(protocol.MessageCommand{
-						Message: v.Message,
-						Name:    client.name,
-					})
+	for {
+		cmd, err := cmdReader.Read()
 
-				case protocol.NameCommand:
-					client.name = v.Name
-				}
-			}
+		if err != nil && err != io.EOF {
+			log.Printf("Read error: %v", err)
+		}
 
-			if err == io.EOF {
-				break
+		if cmd != nil {
+			switch v := cmd.(type) {
+			case protocol.SendCommand:
+				go s.Broadcast(protocol.MessageCommand{
+					Message: v.Message,
+					Name:    client.name,
+				})
+
+			case protocol.NameCommand:
+				client.name = v.Name
 			}
 		}
-	}()
+
+		if err == io.EOF {
+			break
+		}
+	}
 }
