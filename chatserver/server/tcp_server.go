@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"io"
 	"log"
 	"net"
@@ -20,6 +21,10 @@ type TcpChatServer struct {
 	clients []*client
 	mutex   *sync.Mutex
 }
+
+var (
+	UnknownClient = errors.New("Unknown client")
+)
 
 func NewServer() *TcpChatServer {
 	return &TcpChatServer{
@@ -57,11 +62,23 @@ func (s *TcpChatServer) Start() {
 	}
 }
 
-func (s *TcpChatServer) Broadcast(msg interface{}) {
+func (s *TcpChatServer) Broadcast(command interface{}) error {
 	for _, client := range s.clients {
 		// TODO: handle error here?
-		client.writer.Write(msg)
+		client.writer.Write(command)
 	}
+
+	return nil
+}
+
+func (s *TcpChatServer) Send(name string, command interface{}) error {
+	for _, client := range s.clients {
+		if client.name == name {
+			return client.writer.Write(command)
+		}
+	}
+
+	return UnknownClient
 }
 
 func (s *TcpChatServer) accept(conn net.Conn) {

@@ -25,7 +25,7 @@ func StartUi(c client.ChatClient) {
 	})
 
 	chatView.OnSubmit(func(msg string) {
-		c.Send(msg)
+		c.SendMessage(msg)
 	})
 
 	go func() {
