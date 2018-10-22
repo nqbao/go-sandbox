@@ -52,3 +52,4 @@ It’s okie to leave channel open. GC will collect it
     * [Should I commit vendor folder?](https://github.com/golang/dep/blob/master/docs/FAQ.md#should-i-commit-my-vendor-directory)
   * [appliedgo.net](https://appliedgo.net/tui/)
   * [Go by examples: Errors](https://gobyexample.com/errors)
+  * [Traps, Gotchas, and Common Mistakes for New Golang Devs](http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/)

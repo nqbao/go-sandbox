@@ -17,9 +17,9 @@ type client struct {
 }
 
 type TcpChatServer struct {
-	listner net.Listener
-	clients []*client
-	mutex   *sync.Mutex
+	listener net.Listener
+	clients  []*client
+	mutex    *sync.Mutex
 }
 
 var (
@@ -36,7 +36,7 @@ func (s *TcpChatServer) Listen(address string) error {
 	l, err := net.Listen("tcp", address)
 
 	if err == nil {
-		s.listner = l
+		s.listener = l
 	}
 
 	log.Printf("Listening on %v", address)
@@ -45,13 +45,13 @@ func (s *TcpChatServer) Listen(address string) error {
 }
 
 func (s *TcpChatServer) Close() {
-	s.listner.Close()
+	s.listener.Close()
 }
 
 func (s *TcpChatServer) Start() {
 	for {
 		// XXX: need a way to break the loop
-		conn, err := s.listner.Accept()
+		conn, err := s.listener.Accept()
 
 		if err != nil {
 			log.Print(err)
