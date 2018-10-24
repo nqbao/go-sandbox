@@ -27,10 +27,9 @@ func (c *TcpChatClient) Dial(address string) error {
 
 	if err == nil {
 		c.conn = conn
+		c.cmdReader = protocol.NewCommandReader(conn)
+		c.cmdWriter = protocol.NewCommandWriter(conn)
 	}
-
-	c.cmdReader = protocol.NewCommandReader(conn)
-	c.cmdWriter = protocol.NewCommandWriter(conn)
 
 	return err
 }
