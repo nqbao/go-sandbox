@@ -56,6 +56,12 @@ func main() {
 			fmt.Printf("key: %s, value: %s\n", k, v)
 		}
 
+		// reverse reading
+		fmt.Println("reverse scanning")
+		for k, _ := c.Last(); k != nil; k, _ = c.Prev() {
+			fmt.Printf("key: %s\n", k)
+		}
+
 		return nil
 	})
 
