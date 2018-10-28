@@ -32,3 +32,7 @@
 [[constraint]]
   name = "github.com/marcusolsson/tui-go"
   revision = "cd94d703fac144c572eb929177adc5ae9a082e8e"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/tecbot/gorocksdb"

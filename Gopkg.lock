@@ -2,6 +2,46 @@
 
 
 [[projects]]
+  digest = "1:94522940ca23ad10f921aa39655afec923b49ef10071dfaabf05bac1eac4ce5e"
+  name = "github.com/aws/aws-sdk-go"
+  packages = [
+    "aws",
+    "aws/awserr",
+    "aws/awsutil",
+    "aws/client",
+    "aws/client/metadata",
+    "aws/corehandlers",
+    "aws/credentials",
+    "aws/credentials/ec2rolecreds",
+    "aws/credentials/endpointcreds",
+    "aws/credentials/stscreds",
+    "aws/csm",
+    "aws/defaults",
+    "aws/ec2metadata",
+    "aws/endpoints",
+    "aws/request",
+    "aws/session",
+    "aws/signer/v4",
+    "internal/ini",
+    "internal/sdkio",
+    "internal/sdkrand",
+    "internal/sdkuri",
+    "internal/shareddefaults",
+    "private/protocol",
+    "private/protocol/json/jsonutil",
+    "private/protocol/jsonrpc",
+    "private/protocol/query",
+    "private/protocol/query/queryutil",
+    "private/protocol/rest",
+    "private/protocol/xml/xmlutil",
+    "service/kms",
+    "service/sts",
+  ]
+  pruneopts = "UT"
+  revision = "f76d9803fd695eebf74cb23c460287fa496efc21"
+  version = "v1.15.63"
+
+[[projects]]
   branch = "master"
   digest = "1:40d0056c1b1f503c366ba441df92a82b5a2654d6f3747b1689a611eb5c9ce0a2"
   name = "github.com/gdamore/encoding"
@@ -19,6 +59,13 @@
   pruneopts = "UT"
   revision = "de7e78efa4a71b3f36c7154989c529dbdf9ae623"
   version = "v1.1.0"
+
+[[projects]]
+  digest = "1:e22af8c7518e1eab6f2eab2b7d7558927f816262586cd6ed9f349c97a6c285c4"
+  name = "github.com/jmespath/go-jmespath"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0b12d6b5"
 
 [[projects]]
   digest = "1:c65a16ac77d0b1aefc7009cabb6ac5ad05def02025f5be85f450c03f52cc6f86"
@@ -55,6 +102,38 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:e1c9609f03108cbbe7786b45858369809175c3d9d8bb319cabefe6e4f65bde8c"
+  name = "github.com/nqbao/jnigo"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "303e65215f3fb199eccbb781c8eac52b0732c707"
+
+[[projects]]
+  branch = "master"
+  digest = "1:1e38f591bdbaa29feb1ae8f05822307ff1f36c5a06f439477c424b1c749db5ed"
+  name = "github.com/tecbot/gorocksdb"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "8752a943348155073ae407010e2b75c40480271a"
+
+[[projects]]
+  digest = "1:c28625428387b63dd7154eb857f51e700465cfbf7c06f619e71f2da33cefe47e"
+  name = "go.etcd.io/bbolt"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "583e8937c61f1af6513608ccc75c97b6abdf4ff9"
+  version = "v1.3.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:008fb9f84ae9bf7994228b9c78810d44162071ec13caf28291677897dca819ee"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  pruneopts = "UT"
+  revision = "d989b31c87461dc8ab2f1cac6792814e27fadea9"
+
+[[projects]]
   digest = "1:37672ad5821719e2df8509c2edd4ba5ae192463237c73c3a2d24ef8b2bc9e36f"
   name = "golang.org/x/text"
   packages = [
@@ -71,6 +150,14 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/marcusolsson/tui-go"]
+  input-imports = [
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/kms",
+    "github.com/marcusolsson/tui-go",
+    "github.com/nqbao/jnigo",
+    "github.com/tecbot/gorocksdb",
+    "go.etcd.io/bbolt",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
