@@ -21,5 +21,13 @@ Remarks:
   * You need to create Read/Write options. Make sure to free each of them.
   * There is no Go document, so you need to read Go code or [the document for C++](https://github.com/facebook/rocksdb/wiki)
   * Iterator is similar to Cursor in BoltDB
+    * Tailing Iterator allows you to see new data as it come in.
+  * Merge: Provide a way to perform read-modify-write operation, such as Counter
+    * You need to define a merge operator
+    * Merge happpens lazily, until a Put/Delete/Get
+    * Full merge is to merge existing value and an operand
+    * Partial merge to merge two operands. It can be used to speed up performance (reduce number of full merge)
   * Column Familiy are like Buckets in BoltDB
     * You need to make sure to specify column families when you open the DB. Or you need to open ALL column families.
+    * It is quite ugly when you want to combine with `SetCreateIfMissing`
+  * Compaction Filter: a background garbage collector to remove unused keys
