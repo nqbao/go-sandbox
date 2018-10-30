@@ -9,7 +9,11 @@ import (
 )
 
 func OpenDbWithAllCFs(name string) (*rocksdb.DB, map[string]*rocksdb.ColumnFamilyHandle, error) {
+	mo := NumberMergeOperator{}
+
 	opts := rocksdb.NewDefaultOptions()
+	opts.SetMergeOperator(mo)
+
 	defer opts.Destroy()
 	opts.SetCreateIfMissing(true)
 
@@ -32,19 +36,8 @@ func OpenDbWithAllCFs(name string) (*rocksdb.DB, map[string]*rocksdb.ColumnFamil
 
 		cfOpts := make([]*rocksdb.Options, len(cfNames))
 		for i := range cfNames {
-			cfOpt := rocksdb.NewDefaultOptions()
-			cfOpt.SetKeepLogFileNum(10)
-			cfOpt.SetCompression(rocksdb.ZLibCompression)
-
-			cfOpts[i] = cfOpt
+			cfOpts[i] = opts
 		}
-
-		// free all the options for cfs
-		defer func() {
-			for i := range cfOpts {
-				cfOpts[i].Destroy()
-			}
-		}()
 
 		db, cfs, err := rocksdb.OpenDbColumnFamilies(opts, name, cfNames, cfOpts)
 

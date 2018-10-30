@@ -76,4 +76,10 @@ func main() {
 	fmt.Printf("%s\n", result.Data())
 
 	IteratorWithPrefixExample(db)
+
+	err = MergeExample(db)
+
+	if err != nil {
+		panic(err)
+	}
 }
