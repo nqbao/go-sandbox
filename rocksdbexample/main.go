@@ -77,9 +77,18 @@ func main() {
 
 	IteratorWithPrefixExample(db)
 
-	err = MergeExample(db)
+	// err = TransactionExample()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
+	/*err = SnapshotExample(db)
 	if err != nil {
 		panic(err)
-	}
+	}*/
+
+	/*err = MergeExample(db)
+	if err != nil {
+		panic(err)
+	}*/
 }

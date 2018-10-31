@@ -31,3 +31,10 @@ Remarks:
     * You need to make sure to specify column families when you open the DB. Or you need to open ALL column families.
     * It is quite ugly when you want to combine with `SetCreateIfMissing`
   * Compaction Filter: a background garbage collector to remove unused keys
+  * Snapshot: provide a view of the DB at the time creation
+  * Transactions: provide transaction support, but with some caveat
+    * You have to explicitly create a `TransactionDB`, and there seems to be a problem if you try to open the db twice.
+    * Merge is not available, at least in the Golang binding
+    * Use `GetForUpdate` instead of `Get`
+    * Since this is single process, ACID can be easily achieved using a lock
+  * Checkpont: create a backup of the database to another directory.
