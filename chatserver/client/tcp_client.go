@@ -1,7 +1,6 @@
 package client
 
 import (
-	"io"
 	"log"
 	"net"
 
@@ -13,12 +12,14 @@ type TcpChatClient struct {
 	cmdReader *protocol.CommandReader
 	cmdWriter *protocol.CommandWriter
 	name      string
+	error     chan error
 	incoming  chan protocol.MessageCommand
 }
 
 func NewClient() *TcpChatClient {
 	return &TcpChatClient{
 		incoming: make(chan protocol.MessageCommand),
+		error:    make(chan error),
 	}
 }
 
@@ -38,10 +39,9 @@ func (c *TcpChatClient) Start() {
 	for {
 		cmd, err := c.cmdReader.Read()
 
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			log.Printf("Read error %v", err)
+		if err != nil {
+			c.error <- err
+			break // TODO: find a way to recover from this
 		}
 
 		if cmd != nil {
@@ -61,6 +61,10 @@ func (c *TcpChatClient) Close() {
 
 func (c *TcpChatClient) Incoming() chan protocol.MessageCommand {
 	return c.incoming
+}
+
+func (c *TcpChatClient) Error() chan error {
+	return c.error
 }
 
 func (c *TcpChatClient) Send(command interface{}) error {

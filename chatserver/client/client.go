@@ -2,8 +2,6 @@ package client
 
 import "github.com/nqbao/learn-go/chatserver/protocol"
 
-type messageHandler func(string)
-
 type ChatClient interface {
 	Dial(address string) error
 	Start()
@@ -11,5 +9,6 @@ type ChatClient interface {
 	Send(command interface{}) error
 	SetName(name string) error
 	SendMessage(message string) error
+	Error() chan error
 	Incoming() chan protocol.MessageCommand
 }

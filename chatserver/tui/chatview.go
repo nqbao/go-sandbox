@@ -1,8 +1,6 @@
 package tui
 
 import (
-	"fmt"
-
 	tui "github.com/marcusolsson/tui-go"
 )
 
@@ -60,10 +58,10 @@ func (c *ChatView) OnSubmit(handler SubmitMessageHandler) {
 	c.onSubmit = handler
 }
 
-func (c *ChatView) AddMessage(user string, msg string) {
+func (c *ChatView) AddMessage(msg string) {
 	c.history.Append(
 		tui.NewHBox(
-			tui.NewLabel(fmt.Sprintf("%v: %v", user, msg)),
+			tui.NewLabel(msg),
 		),
 	)
 }

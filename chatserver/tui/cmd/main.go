@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	address := flag.String("server", "", "Which server to connect to")
+	address := flag.String("server", "localhost:3333", "Which server to connect to")
 
 	flag.Parse()
 

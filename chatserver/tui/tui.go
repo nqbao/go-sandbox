@@ -1,6 +1,9 @@
 package tui
 
 import (
+	"fmt"
+	"io"
+
 	"github.com/marcusolsson/tui-go"
 	"github.com/nqbao/learn-go/chatserver/client"
 )
@@ -29,11 +32,23 @@ func StartUi(c client.ChatClient) {
 	})
 
 	go func() {
-		for msg := range c.Incoming() {
-			// we need to make the change via ui update to make sure the ui is repaint correctly
-			ui.Update(func() {
-				chatView.AddMessage(msg.Name, msg.Message)
-			})
+		for {
+			select {
+			case err := <-c.Error():
+
+				if err == io.EOF {
+					ui.Update(func() {
+						chatView.AddMessage("Connection closed connection from server.")
+					})
+				} else {
+					panic(err)
+				}
+			case msg := <-c.Incoming():
+				// we need to make the change via ui update to make sure the ui is repaint correctly
+				ui.Update(func() {
+					chatView.AddMessage(fmt.Sprintf("%v: %v", msg.Name, msg.Message))
+				})
+			}
 		}
 	}()
 
