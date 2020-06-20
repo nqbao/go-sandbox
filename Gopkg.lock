@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:94522940ca23ad10f921aa39655afec923b49ef10071dfaabf05bac1eac4ce5e"
+  digest = "1:6272f576c15b5269d36306080a321cfe90f7c233bfffa15f292bf22a31e0fe0f"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -34,6 +34,9 @@
     "private/protocol/query/queryutil",
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
+    "service/dynamodb",
+    "service/dynamodb/dynamodbattribute",
+    "service/dynamodb/expression",
     "service/kms",
     "service/sts",
   ]
@@ -110,6 +113,14 @@
   revision = "303e65215f3fb199eccbb781c8eac52b0732c707"
 
 [[projects]]
+  digest = "1:860c25446f565f998eb698ddc033e9e43b2546eb950b20aca28f30ba73deb86d"
+  name = "github.com/oklog/ulid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "be3bccf06dda9a40aa6800c4736ac77f2fef987f"
+  version = "v2.0.2"
+
+[[projects]]
   branch = "master"
   digest = "1:1e38f591bdbaa29feb1ae8f05822307ff1f36c5a06f439477c424b1c749db5ed"
   name = "github.com/tecbot/gorocksdb"
@@ -153,9 +164,13 @@
   input-imports = [
     "github.com/aws/aws-sdk-go/aws",
     "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/dynamodb",
+    "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
+    "github.com/aws/aws-sdk-go/service/dynamodb/expression",
     "github.com/aws/aws-sdk-go/service/kms",
     "github.com/marcusolsson/tui-go",
     "github.com/nqbao/jnigo",
+    "github.com/oklog/ulid",
     "github.com/tecbot/gorocksdb",
     "go.etcd.io/bbolt",
   ]
