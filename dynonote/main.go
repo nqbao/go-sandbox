@@ -69,13 +69,17 @@ func main() {
 	// 	service.UpdateNote(note)
 	// }
 
-	// service.DeleteNote("test", "01EB5HBGTTGGMP3ZW3H7HPZZ63")
+	// service.DeleteNote("khanh", "01EB9C4K6PSR2JYHEJ5D39DEAQ")
+	// service.StarNote("khanh", "01EB9C4K45AZ0PMDNFEC41YMWF", 0)
+	// n := service.GetNote("khanh", "01EB9C4K45AZ0PMDNFEC41YMWF")
+	// if n != nil {
+	//	fmt.Printf("%v", n)
+	//}
 
-	// notes := service.GetUserNote("test")
-	// notes := service.GetAllNotes()
-	// for _, n := range notes {
-	// 	fmt.Printf("%v %v %v\n", n.ULID, n.UserKey, n.Title)
-	// }
+	notes := service.GetStarNotes("khanh")
+	for _, n := range notes {
+		fmt.Printf("%v %v %v\n", n.ULID, n.UserKey, n.Title)
+	}
 
-	testHeavyRead()
+	// testHeavyRead()
 }

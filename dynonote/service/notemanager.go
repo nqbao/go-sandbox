@@ -5,18 +5,21 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/aws/aws-dax-go/dax"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
 	"github.com/nqbao/learn-go/dynonote/model"
 	"github.com/oklog/ulid"
 )
 
 var (
-	region    = "us-east-1"
-	tableName = "test.notes"
+	region      = "us-east-1"
+	tableName   = "test.notes"
+	daxEndpoint = "test2.8mmam2.clustercfg.dax.use1.cache.amazonaws.com:8111"
 )
 
 func newID() string {
@@ -32,6 +35,19 @@ func newSession() *session.Session {
 	})
 
 	return sess
+}
+
+func newDaxClient() dynamodbiface.DynamoDBAPI {
+	cfg := dax.DefaultConfig()
+	cfg.HostPorts = []string{daxEndpoint}
+	cfg.Region = region
+	cli, err := dax.New(cfg)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return cli
 }
 
 func CreateNote(n *model.Note) {
@@ -90,7 +106,8 @@ func GetNote(user string, id string) (note *model.Note) {
 }
 
 func DeleteNote(user string, id string) {
-	client := dynamodb.New(newSession())
+	// client := dynamodb.New(newSession())
+	client := newDaxClient()
 
 	output, err := client.DeleteItem(&dynamodb.DeleteItemInput{
 		TableName: aws.String(tableName),
@@ -115,8 +132,6 @@ func DeleteNote(user string, id string) {
 func GetUserNote(user string) (result []*model.Note) {
 	result = nil
 
-	client := dynamodb.New(newSession())
-
 	input := &dynamodb.QueryInput{
 		TableName:              aws.String(tableName),
 		ReturnConsumedCapacity: aws.String("TOTAL"),
@@ -134,6 +149,45 @@ func GetUserNote(user string) (result []*model.Note) {
 	input.SetExpressionAttributeNames((expr.Names()))
 	input.SetExpressionAttributeValues(expr.Values())
 
+	result, err = queryNotes(input)
+
+	return
+}
+
+func GetStarNotes(user string) (result []*model.Note) {
+	result = nil
+
+	input := &dynamodb.QueryInput{
+		TableName:              aws.String(tableName),
+		IndexName:              aws.String("uid-star-index"),
+		ReturnConsumedCapacity: aws.String("TOTAL"),
+	}
+
+	expr, err := expression.NewBuilder().WithKeyCondition(
+		expression.Key("uid").Equal(expression.Value(user)),
+	).Build()
+
+	if err != nil {
+		panic(err)
+	}
+
+	input.SetKeyConditionExpression(*expr.KeyCondition())
+	input.SetExpressionAttributeNames((expr.Names()))
+	input.SetExpressionAttributeValues(expr.Values())
+
+	result, err = queryNotes(input)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return
+}
+
+func queryNotes(input *dynamodb.QueryInput) (result []*model.Note, err error) {
+	client := dynamodb.New(newSession())
+	// client := newDaxClient()
+
 	err = client.QueryPages(input, func(output *dynamodb.QueryOutput, lastPage bool) bool {
 		for _, item := range output.Items {
 			note := &model.Note{}
@@ -144,10 +198,6 @@ func GetUserNote(user string) (result []*model.Note) {
 
 		return true
 	})
-
-	if err != nil {
-		panic(err)
-	}
 
 	return
 }
@@ -173,15 +223,24 @@ func GetAllNotes() (result []*model.Note, err error) {
 	return
 }
 
-func StarNote(user string, id string, star bool) {
+func StarNote(user string, id string, star int) {
 	client := dynamodb.New(newSession())
 
-	expr, err := expression.NewBuilder().WithUpdate(
-		expression.Set(expression.Name("star"), expression.Value(star)),
-	).Build()
+	var expr expression.Expression
+	var err error
 
-	if err != nil {
-		panic(err)
+	if star != 0 {
+		expr, err = expression.NewBuilder().WithUpdate(
+			expression.Set(expression.Name("star"), expression.Value(star)),
+		).Build()
+
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		expr, err = expression.NewBuilder().WithUpdate(
+			expression.Remove(expression.Name("star")),
+		).Build()
 	}
 
 	out, err := client.UpdateItem(&dynamodb.UpdateItemInput{

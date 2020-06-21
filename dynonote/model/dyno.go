@@ -1,5 +1,0 @@
-package model
-
-func CreateTable() {
-
-}

@@ -2,7 +2,30 @@
 
 
 [[projects]]
-  digest = "1:6272f576c15b5269d36306080a321cfe90f7c233bfffa15f292bf22a31e0fe0f"
+  digest = "1:3076a0751f5648f3ab1838abfba18bc5bf514cde7e3957500b62fba90633479a"
+  name = "github.com/antlr/antlr4"
+  packages = ["runtime/Go/antlr"]
+  pruneopts = "UT"
+  revision = "7a3f40bc341ddfb463d6e0aa1a6265064d020cb6"
+  version = "4.8"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d78b3e4f7ffa8d0bd2f4076d5fc2b68e7507ee407fcd3279b8c1f4f32938c1a0"
+  name = "github.com/aws/aws-dax-go"
+  packages = [
+    "dax",
+    "dax/internal/cbor",
+    "dax/internal/client",
+    "dax/internal/lru",
+    "dax/internal/parser",
+    "dax/internal/parser/generated",
+  ]
+  pruneopts = "UT"
+  revision = "2528715f78d8b40d5e7477e648069abf19cf3f8b"
+
+[[projects]]
+  digest = "1:364f682dc1bd1bfca1d5f334905432af895fd403d105a4a877282a8c8c34e079"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -14,7 +37,9 @@
     "aws/credentials",
     "aws/credentials/ec2rolecreds",
     "aws/credentials/endpointcreds",
+    "aws/credentials/processcreds",
     "aws/credentials/stscreds",
+    "aws/crr",
     "aws/csm",
     "aws/defaults",
     "aws/ec2metadata",
@@ -22,11 +47,15 @@
     "aws/request",
     "aws/session",
     "aws/signer/v4",
+    "internal/context",
     "internal/ini",
     "internal/sdkio",
+    "internal/sdkmath",
     "internal/sdkrand",
     "internal/sdkuri",
     "internal/shareddefaults",
+    "internal/strings",
+    "internal/sync/singleflight",
     "private/protocol",
     "private/protocol/json/jsonutil",
     "private/protocol/jsonrpc",
@@ -36,13 +65,15 @@
     "private/protocol/xml/xmlutil",
     "service/dynamodb",
     "service/dynamodb/dynamodbattribute",
+    "service/dynamodb/dynamodbiface",
     "service/dynamodb/expression",
     "service/kms",
     "service/sts",
+    "service/sts/stsiface",
   ]
   pruneopts = "UT"
-  revision = "f76d9803fd695eebf74cb23c460287fa496efc21"
-  version = "v1.15.63"
+  revision = "1f57dbf66e23e62fa8b40039709c45afdd53e6d8"
+  version = "v1.32.6"
 
 [[projects]]
   branch = "master"
@@ -64,11 +95,19 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:e22af8c7518e1eab6f2eab2b7d7558927f816262586cd6ed9f349c97a6c285c4"
+  digest = "1:73770491417b7cb646b28610eec6481187aba7b5c3703da0d42f8d590d016f5f"
+  name = "github.com/gofrs/uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "abfe1881e60ef34074c1b8d8c63b42565c356ed6"
+  version = "v3.3.0"
+
+[[projects]]
+  digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
   pruneopts = "UT"
-  revision = "0b12d6b5"
+  revision = "c2b33e84"
 
 [[projects]]
   digest = "1:c65a16ac77d0b1aefc7009cabb6ac5ad05def02025f5be85f450c03f52cc6f86"
@@ -162,10 +201,12 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/aws/aws-dax-go/dax",
     "github.com/aws/aws-sdk-go/aws",
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/dynamodb",
     "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
+    "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface",
     "github.com/aws/aws-sdk-go/service/dynamodb/expression",
     "github.com/aws/aws-sdk-go/service/kms",
     "github.com/marcusolsson/tui-go",

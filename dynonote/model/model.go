@@ -6,4 +6,5 @@ type Note struct {
 	Title       string
 	Content     string
 	CategoryKey string
+	Star        int `dynamodb:"star,omitempty"`
 }
