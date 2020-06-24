@@ -168,7 +168,7 @@ func (nm *NoteManager) DeleteNote(user string, id int) error {
 	return err
 }
 
-func (nm *NoteManager) GetUserNote(user string, limit int, startKey string) (result []*model.Note, err error) {
+func (nm *NoteManager) GetUserNote(user string, limit int, startKey string) (result []*model.Note, newStartKey string, err error) {
 	result = nil
 
 	input := &dynamodb.QueryInput{
@@ -195,17 +195,17 @@ func (nm *NoteManager) GetUserNote(user string, limit int, startKey string) (res
 
 	if startKey != "" {
 		input.SetExclusiveStartKey(map[string]*dynamodb.AttributeValue{
-			"uid": &dynamodb.AttributeValue{S: &user},
-			"nid": &dynamodb.AttributeValue{S: &startKey},
+			"user_id":   &dynamodb.AttributeValue{S: &user},
+			"timestamp": &dynamodb.AttributeValue{N: &startKey},
 		})
 	}
 
-	result, err = queryNotes(input)
+	result, newStartKey, err = queryNotes(input)
 
 	return
 }
 
-func queryNotes(input *dynamodb.QueryInput) (result []*model.Note, err error) {
+func queryNotes(input *dynamodb.QueryInput) (result []*model.Note, startKey string, err error) {
 	client := dynamodb.New(newSession())
 	// client := newDaxClient()
 
@@ -213,7 +213,7 @@ func queryNotes(input *dynamodb.QueryInput) (result []*model.Note, err error) {
 		output, err := client.Query(input)
 
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 
 		for _, item := range output.Items {
@@ -223,7 +223,12 @@ func queryNotes(input *dynamodb.QueryInput) (result []*model.Note, err error) {
 			result = append(result, note)
 		}
 
-		fmt.Printf("%v\n", output.LastEvaluatedKey)
+		// fmt.Printf("%v\n", *input.Limit)
+		// fmt.Printf("%v\n", output.LastEvaluatedKey)
+
+		if len(output.LastEvaluatedKey) > 0 {
+			startKey = *(output.LastEvaluatedKey["timestamp"].N)
+		}
 	} else {
 		err = client.QueryPages(input, func(output *dynamodb.QueryOutput, lastPage bool) bool {
 			for _, item := range output.Items {

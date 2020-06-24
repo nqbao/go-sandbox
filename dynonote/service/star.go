@@ -73,7 +73,7 @@ func GetStarNotes(user string) (result []*model.Note) {
 	input.SetExpressionAttributeNames((expr.Names()))
 	input.SetExpressionAttributeValues(expr.Values())
 
-	result, err = queryNotes(input)
+	result, _, err = queryNotes(input)
 
 	if err != nil {
 		panic(err)

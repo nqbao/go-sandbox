@@ -17,8 +17,8 @@ import (
 const address = ":5000"
 
 type ListNoteResponses struct {
-	Items             []*model.Note
-	LastEvaluationKey string
+	Items            []*model.Note
+	LastEvaluatedKey map[string]string `json:",omitempty"`
 }
 
 func listUserNote(w http.ResponseWriter, r *http.Request) {
@@ -27,13 +27,13 @@ func listUserNote(w http.ResponseWriter, r *http.Request) {
 	limitArg := r.URL.Query()["limit"]
 	limit := 5
 
-	if len(limitArg) > 1 {
+	if len(limitArg) >= 1 {
 		limit, _ = strconv.Atoi(limitArg[0])
 	}
 
 	nm := service.NewNoteManager(nil)
 
-	notes, err := nm.GetUserNote(getUser(r), limit, vars["next"])
+	notes, startKey, err := nm.GetUserNote(getUser(r), limit, vars["start"])
 
 	writer := json.NewEncoder(w)
 
@@ -47,6 +47,13 @@ func listUserNote(w http.ResponseWriter, r *http.Request) {
 		repr := ListNoteResponses{
 			Items: notes,
 		}
+
+		if startKey != "" {
+			repr.LastEvaluatedKey = map[string]string{
+				"timestamp": startKey,
+			}
+		}
+
 		writer.Encode(repr)
 	}
 }
@@ -67,7 +74,7 @@ func StartServer() {
 		HandlerFunc(deleteNote)
 
 	router.Path("/api/notes").
-		Queries("next", "{next}").
+		Queries("start", "{start}").
 		HandlerFunc(listUserNote)
 
 	router.HandleFunc("/api/notes", listUserNote)
