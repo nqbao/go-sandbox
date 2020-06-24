@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-dax-go/dax"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -22,6 +23,25 @@ var (
 	tableName   = "test.notes"
 	daxEndpoint = "test2.8mmam2.clustercfg.dax.use1.cache.amazonaws.com:8111"
 )
+
+type NoteManager struct {
+	session *session.Session
+}
+
+func NewNoteManager(creds *credentials.Credentials) *NoteManager {
+	nm := &NoteManager{}
+
+	if creds != nil {
+		nm.session, _ = session.NewSession(&aws.Config{
+			Region:      &region,
+			Credentials: creds,
+		})
+	} else {
+		nm.session = newSession()
+	}
+
+	return nm
+}
 
 func newID() string {
 	entropy := ulid.Monotonic(rand.New(rand.NewSource(time.Now().UnixNano())), 0)
@@ -55,19 +75,19 @@ func newDaxClient() dynamodbiface.DynamoDBAPI {
 	return cli
 }
 
-func CreateNote(n *model.Note) error {
+func (nm *NoteManager) CreateNote(n *model.Note) error {
 	n.Timestamp = time.Now().Unix()
 	n.ULID = newID()
-	return putNote(n, false)
+	return nm.putNote(n, false)
 }
 
-func UpdateNote(n *model.Note) error {
-	return putNote(n, true)
+func (nm *NoteManager) UpdateNote(n *model.Note) error {
+	return nm.putNote(n, true)
 }
 
 // put item will replace item with same key
-func putNote(n *model.Note, check bool) error {
-	client := dynamodb.New(newSession())
+func (nm *NoteManager) putNote(n *model.Note, check bool) error {
+	client := dynamodb.New(nm.session)
 
 	av, err := dynamodbattribute.MarshalMap(n)
 
@@ -127,8 +147,8 @@ func GetNote(user string, id string) (note *model.Note) {
 	return
 }
 
-func DeleteNote(user string, id int) error {
-	client := dynamodb.New(newSession())
+func (nm *NoteManager) DeleteNote(user string, id int) error {
+	client := dynamodb.New(nm.session)
 	// client := newDaxClient()
 
 	output, err := client.DeleteItem(&dynamodb.DeleteItemInput{
@@ -148,7 +168,7 @@ func DeleteNote(user string, id int) error {
 	return err
 }
 
-func GetUserNote(user string, limit int, startKey string) (result []*model.Note, err error) {
+func (nm *NoteManager) GetUserNote(user string, limit int, startKey string) (result []*model.Note, err error) {
 	result = nil
 
 	input := &dynamodb.QueryInput{

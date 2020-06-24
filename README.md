@@ -9,13 +9,15 @@ What i like about Go:
   * Channel and goroutine is awesome, a lot more cleaner than in python where i have to use Condition for cordination.
   * Concurrency is easy to reason. Everything is blocking, unless you let it `go`.
   * Strong-typed
+  * Fast compilation
 
 What I don't like about Go:
 
   * Single workspace is a confusing.
   * Error handling is just awful. It's too bad that Go does not have a try / catch block.
-  * JSON deserialization is hard if you don't know the key and type of the value.
-  * Lacking of Generic
+  * JSON deserialization is hard if you deal with generic interface
+  * You tend to write more code due to the verbose syntax of Go
+  * Lacking of Generic (coming soon)
 
 ## I/O
 

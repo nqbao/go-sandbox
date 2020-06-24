@@ -44,3 +44,7 @@
 [[constraint]]
   name = "github.com/oklog/ulid"
   version = "2.0.2"
+
+[[constraint]]
+  name = "github.com/dgrijalva/jwt-go"
+  version = "3.2.0"

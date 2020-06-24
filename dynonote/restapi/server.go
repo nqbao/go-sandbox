@@ -21,39 +21,19 @@ type ListNoteResponses struct {
 	LastEvaluationKey string
 }
 
-func getUser(r *http.Request) string {
-	return "bao" // XXX
-}
-
-func deleteNote(w http.ResponseWriter, r *http.Request) {
-	writer := json.NewEncoder(w)
-
-	vars := mux.Vars(r)
-	ts, _ := strconv.Atoi(vars["timestamp"])
-	err := service.DeleteNote(getUser(r), ts)
-
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		writer.Encode(map[string]string{
-			"status":  "error",
-			"message": fmt.Sprintf("%v", err),
-		})
-	} else {
-		w.Write([]byte("{\"success\": true}"))
-	}
-}
-
 func listUserNote(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	limitArg := r.URL.Query()["limit"]
-	limit := 20
+	limit := 5
 
 	if len(limitArg) > 1 {
 		limit, _ = strconv.Atoi(limitArg[0])
 	}
 
-	notes, err := service.GetUserNote(getUser(r), limit, vars["next"])
+	nm := service.NewNoteManager(nil)
+
+	notes, err := nm.GetUserNote(getUser(r), limit, vars["next"])
 
 	writer := json.NewEncoder(w)
 

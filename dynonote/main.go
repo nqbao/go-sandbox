@@ -18,6 +18,8 @@ func testHeavyWrite(user string) {
 	count := 100
 	workers := 2
 
+	nm := service.NewNoteManager(nil)
+
 	for z := 0; z < workers; z++ {
 		go func(starter int) {
 			t := time.Now()
@@ -27,7 +29,7 @@ func testHeavyWrite(user string) {
 				note.UserKey = user
 				note.Title = fmt.Sprintf("my note %v", z*count+i)
 				note.Content = "world"
-				service.CreateNote(note)
+				nm.CreateNote(note)
 
 				if i > 0 && i%100 == 0 {
 					fmt.Printf("Write %v items in %v seconds\n", i, (time.Now().Unix() - t.Unix()))
