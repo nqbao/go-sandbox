@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nqbao/learn-go/dynonote/model"
+	"github.com/nqbao/learn-go/dynonote/restapi"
 	"github.com/nqbao/learn-go/dynonote/service"
 )
 
@@ -76,10 +77,12 @@ func main() {
 	//	fmt.Printf("%v", n)
 	//}
 
-	notes := service.GetStarNotes("khanh")
-	for _, n := range notes {
-		fmt.Printf("%v %v %v\n", n.ULID, n.UserKey, n.Title)
-	}
+	// notes := service.GetStarNotes("khanh")
+	// for _, n := range notes {
+	// 	fmt.Printf("%v %v %v\n", n.ULID, n.UserKey, n.Title)
+	// }
 
 	// testHeavyRead()
+
+	restapi.StartServer()
 }

@@ -25,7 +25,7 @@
   revision = "2528715f78d8b40d5e7477e648069abf19cf3f8b"
 
 [[projects]]
-  digest = "1:364f682dc1bd1bfca1d5f334905432af895fd403d105a4a877282a8c8c34e079"
+  digest = "1:6f999996d0c3a89153df25da75b80cbd7a6784430a2971340aec246f82d921dc"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -63,6 +63,7 @@
     "private/protocol/query/queryutil",
     "private/protocol/rest",
     "private/protocol/xml/xmlutil",
+    "service/cognitoidentity",
     "service/dynamodb",
     "service/dynamodb/dynamodbattribute",
     "service/dynamodb/dynamodbiface",
@@ -101,6 +102,30 @@
   pruneopts = "UT"
   revision = "abfe1881e60ef34074c1b8d8c63b42565c356ed6"
   version = "v3.3.0"
+
+[[projects]]
+  digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:b117faf01abdbdadd7b8ceeae74cd1369c1b073fef41aee8b674c9d704a54c16"
+  name = "github.com/gorilla/handlers"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "8a3748addc242fc560bd6d4ff28b0374c010b1b4"
+  version = "v1.4.2"
+
+[[projects]]
+  digest = "1:25ebe6496abb289ef977c081b2d49f56dd97c32db4ca083d37f95923909ced02"
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "75dcda0896e109a2a22c9315bca3bb21b87b2ba5"
+  version = "v1.7.4"
 
 [[projects]]
   digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
@@ -204,11 +229,15 @@
     "github.com/aws/aws-dax-go/dax",
     "github.com/aws/aws-sdk-go/aws",
     "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/cognitoidentity",
     "github.com/aws/aws-sdk-go/service/dynamodb",
     "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute",
     "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface",
     "github.com/aws/aws-sdk-go/service/dynamodb/expression",
     "github.com/aws/aws-sdk-go/service/kms",
+    "github.com/gorilla/context",
+    "github.com/gorilla/handlers",
+    "github.com/gorilla/mux",
     "github.com/marcusolsson/tui-go",
     "github.com/nqbao/jnigo",
     "github.com/oklog/ulid",
